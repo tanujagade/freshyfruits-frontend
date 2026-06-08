@@ -4,8 +4,11 @@ import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const [data, setData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -13,7 +16,6 @@ export default function Login() {
   const navigate = useNavigate();
 
   const submit = async () => {
-
     setError("");
 
     if (!data.email || !data.password) {
@@ -24,46 +26,45 @@ export default function Login() {
     setLoading(true);
 
     try {
-
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://freshyfruits-backend.onrender.com/api/auth/login",
         data
       );
 
-      // Save user info
-      // Save user info
-localStorage.setItem("token", res.data.token);
-localStorage.setItem("role", res.data.user.role);
-localStorage.setItem("userId", res.data.user._id);
-localStorage.setItem("name", res.data.user.name);
-localStorage.setItem("email", res.data.user.email);
-      // Clear inputs
-      setData({ email: "", password: "" });
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.user.role);
+      localStorage.setItem("userId", res.data.user._id);
+      localStorage.setItem("name", res.data.user.name);
+      localStorage.setItem("email", res.data.user.email);
 
-      // Navigate
+      setData({
+        email: "",
+        password: "",
+      });
+
       if (res.data.user.role === "admin") {
         navigate("/admin");
       } else {
         navigate("/home");
       }
-
     } catch (err) {
-
-      setError(err.response?.data?.message || "Something went wrong");
-
+      setError(
+        err.response?.data?.message || "Login failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") submit();
+    if (e.key === "Enter") {
+      submit();
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8">
-
         <h2 className="text-3xl font-bold text-center text-green-600">
           Welcome Back 🍎
         </h2>
@@ -78,9 +79,7 @@ localStorage.setItem("email", res.data.user.email);
           </div>
         )}
 
-        {/* Email */}
         <div className="mb-4">
-
           <label className="text-sm text-gray-600">Email</label>
 
           <input
@@ -89,16 +88,16 @@ localStorage.setItem("email", res.data.user.email);
             className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
             value={data.email}
             onChange={(e) =>
-              setData({ ...data, email: e.target.value })
+              setData({
+                ...data,
+                email: e.target.value,
+              })
             }
             onKeyDown={handleKeyDown}
           />
-
         </div>
 
-        {/* Password */}
         <div className="mb-4 relative">
-
           <label className="text-sm text-gray-600">Password</label>
 
           <input
@@ -107,7 +106,10 @@ localStorage.setItem("email", res.data.user.email);
             className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
             value={data.password}
             onChange={(e) =>
-              setData({ ...data, password: e.target.value })
+              setData({
+                ...data,
+                password: e.target.value,
+              })
             }
             onKeyDown={handleKeyDown}
           />
@@ -116,16 +118,18 @@ localStorage.setItem("email", res.data.user.email);
             className="absolute right-3 top-9 cursor-pointer text-gray-500"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showPassword ? (
+              <EyeOff size={18} />
+            ) : (
+              <Eye size={18} />
+            )}
           </div>
-
         </div>
 
-        {/* Login Button */}
         <button
           onClick={submit}
           disabled={loading}
-          className="w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition"
+          className="w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition disabled:opacity-70"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
@@ -136,23 +140,15 @@ localStorage.setItem("email", res.data.user.email);
           <hr className="flex-grow" />
         </div>
 
-        {/* Google UI
-        <button className="w-full border py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/300/300221.png"
-            alt="google"
-            className="w-5"
-          />
-          Continue with Google
-        </button> */}
-
         <p className="text-center text-sm text-gray-500 mt-6">
-          Don’t have an account?{" "}
-          <Link to="/signup" className="text-green-600 font-semibold">
+          Don&apos;t have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-green-600 font-semibold"
+          >
             Sign up
           </Link>
         </p>
-
       </div>
     </div>
   );

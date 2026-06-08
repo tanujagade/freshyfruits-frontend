@@ -7,31 +7,36 @@ import {
   useLocation
 } from "react-router-dom";
 
+// Component Imports
 import Navbar from "./Components/Navbar";
+import Footer from "./Components/Footer";
+import FreshyBot from "./Components/FreshyBot"; // Fixed capitalization to match your folder structure
+
+// Page Imports
 import LandingPage from "./Pages/LandingPage";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
+import Home from "./Pages/Home";
 import CategoryPage from "./Pages/CategoryPage";
 import FruitDetails from "./Pages/FruitDetails";
-import Home from "./Pages/Home";
-import AdminDashboard from "./Pages/AdminDashboard";
-import Footer from "./Components/Footer";
 import SeasonalProducts from "./Pages/SeasonalProducts";
-import Cart from "./Pages/Cart";
 import SearchPage from "./Pages/SearchPage";
+import Cart from "./Pages/Cart";
 import Checkout from "./Pages/Checkout";
 import OrderSuccess from "./Pages/OrderSuccess";
 import Orders from "./Pages/Orders";
 import Profile from "./Pages/Profile";
+import AdminDashboard from "./Pages/AdminDashboard";
+
+// Context Providers
 import { CartProvider } from "./context/CartContext";
 
 function Layout() {
-
   const location = useLocation();
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-  // Hide navbar on landing/login/signup
+  // Logic to hide navigation and bot elements on landing, login, and signup pages
   const hideNavbar =
     location.pathname === "/" ||
     location.pathname === "/login" ||
@@ -39,10 +44,10 @@ function Layout() {
 
   return (
     <>
+      {/* Renders Navbar only if user is logged in and not on authentication pages */}
       {!hideNavbar && token && <Navbar />}
 
       <Routes>
-
         {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
 
@@ -64,23 +69,25 @@ function Layout() {
           element={!token ? <Signup /> : <Navigate to="/home" />}
         />
 
-        {/* User Protected */}
+        {/* User Protected Route */}
         <Route
           path="/home"
           element={token ? <Home /> : <Navigate to="/login" />}
         />
 
-        {/* Admin Protected */}
+        {/* Admin Protected Route */}
         <Route
           path="/admin"
           element={
-            token && role === "admin"
-              ? <AdminDashboard />
-              : <Navigate to="/login" />
+            token && role === "admin" ? (
+              <AdminDashboard />
+            ) : (
+              <Navigate to="/login" />
+            )
           }
         />
 
-        {/* Product Routes */}
+        {/* Product & E-commerce Routes */}
         <Route path="/category/:slug" element={<CategoryPage />} />
         <Route path="/fruit/:id" element={<FruitDetails />} />
         <Route path="/seasonal/:slug" element={<SeasonalProducts />} />
@@ -91,6 +98,9 @@ function Layout() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/orders" element={<Orders />} />
       </Routes>
+
+      {/* Floating AI Chatbot: Renders globally on all shop pages once user is logged in */}
+      {!hideNavbar && token && <FreshyBot />}
 
       <Footer />
     </>

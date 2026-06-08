@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const FruitCard = ({ fruit, addToCart }) => {
+const BACKEND_URL = "https://freshyfruits-backend.onrender.com";
 
+const FruitCard = ({ fruit, addToCart }) => {
   const [kg, setKg] = useState(1);
   const navigate = useNavigate();
 
   if (!fruit) return null;
 
-  // ✅ HANDLE KG
   const handleKgChange = (e) => {
     const value = Number(e.target.value);
     if (value < 1) {
@@ -19,67 +19,59 @@ const FruitCard = ({ fruit, addToCart }) => {
     }
   };
 
-  // ✅ ADD TO CART
   const handleAddToCart = async () => {
     try {
-
       if (!addToCart) {
         console.error("addToCart function not found");
         return;
       }
 
-      // ⏳ LOADING
       Swal.fire({
         title: "Adding to cart...",
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
-        }
+        },
       });
 
       await addToCart(fruit._id, kg);
 
-      Swal.close(); // close loading
+      Swal.close();
 
-      // ✅ SUCCESS
       Swal.fire({
         icon: "success",
         title: "Added to Cart 🛒",
         text: `${fruit.name} added successfully!`,
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
 
       navigate("/cart");
-
     } catch (err) {
       console.error("Add to cart error:", err);
 
       Swal.fire({
         icon: "error",
         title: "Error ❌",
-        text: "Failed to add item to cart"
+        text: "Failed to add item to cart",
       });
     }
   };
 
-  // ✅ BUY NOW
   const handleBuyNow = async () => {
     try {
-
       if (!addToCart) {
         console.error("addToCart function not found");
         return;
       }
 
-      // ⏳ LOADING
       Swal.fire({
         title: "Processing...",
         text: "Please wait",
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
-        }
+        },
       });
 
       await addToCart(fruit._id, kg);
@@ -87,26 +79,33 @@ const FruitCard = ({ fruit, addToCart }) => {
       Swal.close();
 
       navigate("/checkout");
-
     } catch (err) {
       console.error("Buy now error:", err);
 
       Swal.fire({
         icon: "error",
         title: "Error ❌",
-        text: "Something went wrong"
+        text: "Something went wrong",
       });
     }
   };
 
+  const imageUrl = fruit.image
+    ? fruit.image.startsWith("http")
+      ? fruit.image
+      : `${BACKEND_URL}${fruit.image}`
+    : "/placeholder.jpg";
+
   return (
     <div className="bg-white shadow-lg rounded-lg p-4">
-
       {/* IMAGE */}
       <img
-        src={fruit.image ? `http://localhost:5000${fruit.image}` : "/placeholder.jpg"}
+        src={imageUrl}
         alt={fruit.name || "Fruit"}
         className="w-full h-40 object-cover rounded"
+        onError={(e) => {
+          e.target.src = "/placeholder.jpg";
+        }}
       />
 
       {/* NAME */}
@@ -135,7 +134,6 @@ const FruitCard = ({ fruit, addToCart }) => {
 
       {/* BUTTONS */}
       <div className="flex gap-2 mt-3">
-
         <button
           type="button"
           onClick={handleAddToCart}
@@ -158,7 +156,6 @@ const FruitCard = ({ fruit, addToCart }) => {
         >
           View
         </Link>
-
       </div>
     </div>
   );

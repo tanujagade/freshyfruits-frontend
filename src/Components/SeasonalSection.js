@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 
+const BACKEND_URL = "https://freshyfruits-backend.onrender.com";
+
 const SeasonalSection = () => {
   const [seasonals, setSeasonals] = useState([]);
   const navigate = useNavigate();
@@ -12,7 +14,7 @@ const SeasonalSection = () => {
         const res = await api.get("/seasonals");
         setSeasonals(res.data);
       } catch (err) {
-        console.log("Seasonal error:", err);
+        console.error("Seasonal error:", err);
       }
     };
 
@@ -33,9 +35,13 @@ const SeasonalSection = () => {
             className="cursor-pointer rounded-xl overflow-hidden shadow-lg relative group"
           >
             <img
-              src={`http://localhost:5000${season.image}`}
+              src={`${BACKEND_URL}${season.image}`}
               alt={season.name}
               className="w-full h-64 object-cover group-hover:scale-110 transition duration-300"
+              onError={(e) => {
+                e.target.src =
+                  "https://via.placeholder.com/400x300?text=No+Image";
+              }}
             />
 
             <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center text-white">

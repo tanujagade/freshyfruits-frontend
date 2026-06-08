@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const BACKEND_URL = "https://freshyfruits-backend.onrender.com";
+
 const HomeCarousel = () => {
   const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/carousel")
+    axios
+      .get(`${BACKEND_URL}/api/carousel`)
       .then((res) => setSlides(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("Carousel Error:", err));
   }, []);
 
   if (slides.length === 0) return null;
@@ -29,7 +32,7 @@ const HomeCarousel = () => {
     <div
       className="w-full h-[450px] bg-cover bg-center relative flex items-center justify-center"
       style={{
-        backgroundImage: `url(http://localhost:5000${slides[current].image})`,
+        backgroundImage: `url(${BACKEND_URL}${slides[current].image})`,
       }}
     >
       {/* Overlay */}
@@ -48,6 +51,7 @@ const HomeCarousel = () => {
         <h1 className="text-4xl font-bold mb-3">
           {slides[current].title}
         </h1>
+
         <p className="mb-6 text-lg">
           {slides[current].desc}
         </p>
