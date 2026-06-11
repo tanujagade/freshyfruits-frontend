@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const BACKEND_URL = "https://freshyfruits-backend.onrender.com";
-
 const FruitCard = ({ fruit, addToCart }) => {
   const [kg, setKg] = useState(1);
   const navigate = useNavigate();
@@ -12,11 +10,7 @@ const FruitCard = ({ fruit, addToCart }) => {
 
   const handleKgChange = (e) => {
     const value = Number(e.target.value);
-    if (value < 1) {
-      setKg(1);
-    } else {
-      setKg(value);
-    }
+    setKg(value < 1 ? 1 : value);
   };
 
   const handleAddToCart = async () => {
@@ -29,9 +23,7 @@ const FruitCard = ({ fruit, addToCart }) => {
       Swal.fire({
         title: "Adding to cart...",
         allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
+        didOpen: () => Swal.showLoading(),
       });
 
       await addToCart(fruit._id, kg);
@@ -69,9 +61,7 @@ const FruitCard = ({ fruit, addToCart }) => {
         title: "Processing...",
         text: "Please wait",
         allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
+        didOpen: () => Swal.showLoading(),
       });
 
       await addToCart(fruit._id, kg);
@@ -90,31 +80,27 @@ const FruitCard = ({ fruit, addToCart }) => {
     }
   };
 
-  const imageUrl = fruit.image
-    ? fruit.image.startsWith("http")
-      ? fruit.image
-      : `${BACKEND_URL}${fruit.image}`
-    : "/placeholder.jpg";
-
   return (
-    <div className="bg-white shadow-lg rounded-lg p-4">
+    <div className="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl transition">
+      
       {/* IMAGE */}
       <img
-        src={imageUrl}
+        src={fruit.image || "https://via.placeholder.com/400x300?text=No+Image"}
         alt={fruit.name || "Fruit"}
         className="w-full h-40 object-cover rounded"
         onError={(e) => {
-          e.target.src = "/placeholder.jpg";
+          e.target.src =
+            "https://via.placeholder.com/400x300?text=No+Image";
         }}
       />
 
       {/* NAME */}
-      <h2 className="font-bold text-lg mt-2">
+      <h2 className="font-bold text-lg mt-3">
         {fruit.name}
       </h2>
 
       {/* PRICE */}
-      <p>
+      <p className="text-green-700 font-semibold">
         ₹{fruit.pricePerKg} / Kg
       </p>
 
@@ -133,7 +119,7 @@ const FruitCard = ({ fruit, addToCart }) => {
       </p>
 
       {/* BUTTONS */}
-      <div className="flex gap-2 mt-3">
+      <div className="flex gap-2 mt-3 flex-wrap">
         <button
           type="button"
           onClick={handleAddToCart}

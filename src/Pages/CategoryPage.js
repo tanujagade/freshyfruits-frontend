@@ -19,12 +19,18 @@ const CategoryPage = () => {
         setLoading(true);
         setError("");
 
-        const res = await api.get(`/products/category/${slug}`);
+        const response = await api.get(
+          `/products/category/${slug}`
+        );
 
-        setProducts(res.data || []);
-      } catch (error) {
-        console.log("Product fetch error:", error);
-        setError("Failed to load products");
+        setProducts(response.data || []);
+      } catch (err) {
+        console.error("Category fetch error:", err);
+
+        setError(
+          err.response?.data?.message ||
+            "Failed to load products"
+        );
       } finally {
         setLoading(false);
       }
@@ -36,38 +42,37 @@ const CategoryPage = () => {
   }, [slug]);
 
   return (
-    <div className="bg-green-50 min-h-screen p-6">
+    <div className="bg-green-50 min-h-screen py-10 px-4">
+      <div className="max-w-7xl mx-auto">
 
-      {/* TITLE */}
-      <h1 className="text-3xl font-bold text-center mb-6 capitalize">
-        {slug ? slug.replace("-", " ") : "Category"}
-      </h1>
+        <h1 className="text-4xl font-bold text-center mb-10 capitalize">
+          {slug?.replace(/-/g, " ")}
+        </h1>
 
-      {/* LOADING */}
-      {loading ? (
-        <p className="text-center">Loading products...</p>
-      ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-
-          {products.length === 0 ? (
-            <p className="col-span-full text-center">
-              No products found
-            </p>
-          ) : (
-            products.map((product) => (
+        {loading ? (
+          <div className="text-center text-lg">
+            Loading products...
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 text-lg">
+            {error}
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center text-gray-500 text-lg">
+            No products found in this category
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {products.map((product) => (
               <FruitCard
                 key={product._id}
                 fruit={product}
                 addToCart={addToCart}
               />
-            ))
-          )}
-
-        </div>
-      )}
-
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

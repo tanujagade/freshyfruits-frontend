@@ -32,7 +32,7 @@ const HomeCarousel = () => {
     <div
       className="w-full h-[450px] bg-cover bg-center relative flex items-center justify-center"
       style={{
-        backgroundImage: `url(${BACKEND_URL}${slides[current].image})`,
+        backgroundImage: `url(${slides[current].image})`,
       }}
     >
       {/* Overlay */}

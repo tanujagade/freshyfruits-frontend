@@ -33,9 +33,18 @@ const Orders = () => {
     }
   };
 
+  const getImageUrl = (image) => {
+    if (!image) {
+      return "https://via.placeholder.com/150?text=No+Image";
+    }
+
+    return image.startsWith("http")
+      ? image
+      : `${BASE_URL}${image}`;
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6">
-
       <h2 className="text-3xl font-bold mb-6">
         📦 Your Orders
       </h2>
@@ -54,7 +63,6 @@ const Orders = () => {
               isCancelled ? "opacity-60 bg-gray-100" : ""
             }`}
           >
-
             {/* HEADER */}
             <div className="flex justify-between mb-4">
               <p className="font-semibold">
@@ -63,7 +71,9 @@ const Orders = () => {
 
               <p
                 className={`font-semibold ${
-                  isCancelled ? "text-red-600" : "text-green-600"
+                  isCancelled
+                    ? "text-red-600"
+                    : "text-green-600"
                 }`}
               >
                 {order.status}
@@ -82,34 +92,35 @@ const Orders = () => {
                 key={item._id}
                 className="flex items-center gap-4 mb-3"
               >
-
                 <img
-                  src={`${BASE_URL}${item.productId.image}`}
-                  alt={item.productId.name}
+                  src={getImageUrl(item.productId?.image)}
+                  alt={item.productId?.name || "Fruit"}
                   className="w-16 h-16 object-cover rounded"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/150?text=No+Image";
+                  }}
                 />
 
                 <div>
                   <p className="font-medium">
-                    {item.productId.name}
+                    {item.productId?.name}
                   </p>
 
                   <p className="text-gray-600">
                     Quantity: {item.quantity}
                   </p>
                 </div>
-
               </div>
             ))}
 
             {/* TRACKING */}
             {!isCancelled && (
-              <div className="flex gap-4 mt-4 text-sm">
-
+              <div className="flex gap-4 mt-4 text-sm flex-wrap">
                 <span
                   className={
                     order.status === "Order Placed"
-                      ? "text-green-600"
+                      ? "text-green-600 font-semibold"
                       : ""
                   }
                 >
@@ -119,7 +130,7 @@ const Orders = () => {
                 <span
                   className={
                     order.status === "Packed"
-                      ? "text-green-600"
+                      ? "text-green-600 font-semibold"
                       : ""
                   }
                 >
@@ -129,7 +140,7 @@ const Orders = () => {
                 <span
                   className={
                     order.status === "Shipped"
-                      ? "text-green-600"
+                      ? "text-green-600 font-semibold"
                       : ""
                   }
                 >
@@ -139,13 +150,12 @@ const Orders = () => {
                 <span
                   className={
                     order.status === "Delivered"
-                      ? "text-green-600"
+                      ? "text-green-600 font-semibold"
                       : ""
                   }
                 >
                   Delivered
                 </span>
-
               </div>
             )}
 
@@ -170,7 +180,6 @@ const Orders = () => {
                 Cancel Order
               </button>
             )}
-
           </div>
         );
       })}
