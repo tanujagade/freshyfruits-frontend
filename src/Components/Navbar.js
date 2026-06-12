@@ -51,12 +51,26 @@ const email = localStorage.getItem("email");
           <div className="flex justify-between items-center h-16">
 
             {/* LOGO */}
-            <h1
-              onClick={() => goTo("/home")}
-              className="text-2xl font-bold cursor-pointer hover:text-yellow-300"
-            >
-              FreshyFruits 🍎
-            </h1>
+<div
+  onClick={() => goTo("/home")}
+  className="flex items-center gap-3 cursor-pointer"
+>
+  <img
+    src="/favicon.png"
+    alt="FreshyFruits Logo"
+    className="w-10 h-10 rounded-full object-cover bg-white p-1 shadow-md"
+  />
+
+  <div className="flex flex-col leading-none">
+    <span className="text-xl font-bold text-white hover:text-yellow-300">
+      FreshyFruits
+    </span>
+
+    <span className="text-[10px] text-green-100 hidden lg:block">
+      Freshness in Every Bite
+    </span>
+  </div>
+</div>
 
             {/* SEARCH */}
             <form
