@@ -27,6 +27,8 @@ import OrderSuccess from "./Pages/OrderSuccess";
 import Orders from "./Pages/Orders";
 import Profile from "./Pages/Profile";
 import AdminDashboard from "./Pages/AdminDashboard";
+import About from "./Pages/About";
+import Contact from "./Pages/Contact";
 
 // Context Providers
 import { CartProvider } from "./context/CartContext";
@@ -97,6 +99,8 @@ function Layout() {
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
 
       {/* Floating AI Chatbot: Renders globally on all shop pages once user is logged in */}
